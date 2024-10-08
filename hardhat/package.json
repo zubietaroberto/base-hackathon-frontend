@@ -1,0 +1,16 @@
+{
+  "name": "hardhat-project",
+  "scripts": {
+    "download-transfers": "hardhat download-transfers --network celo"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox-viem": "^3.0.0",
+    "hardhat": "^2.22.12",
+    "prettier": "^3.3.3"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^4.9.1",
+    "@supabase/supabase-js": "^2.45.4",
+    "dotenv": "^16.4.5"
+  }
+}
