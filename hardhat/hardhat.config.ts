@@ -11,6 +11,7 @@ import {
 const CONTRACT_ADDRESS = "0xcF8D5F4a495d94B6A5e2a9E43A909B9631F56247";
 const FROM_BLOCK: bigint = 21808180n;
 const TO_BLOCK: bigint = 23672246n;
+const BLOCKS_PER_QUERY = 600n;
 
 const supabaseClient = createClient(
   process.env.SUPABASE_URL ?? "",
@@ -40,12 +41,16 @@ task(
 
     // Iterate over the events since the FROM_BLOCK
     let events: TransferEvent[] = [];
-    for (let i = FROM_BLOCK; i < TO_BLOCK; i += 1000n) {
+    for (let i = FROM_BLOCK; i < TO_BLOCK; i += BLOCKS_PER_QUERY) {
       console.log("Downloading events from block", i.toString());
       const newEvents = await contract.getEvents.Transfer(
         {},
-        { fromBlock: i, toBlock: i + 1000n }
+        { fromBlock: i, toBlock: i + BLOCKS_PER_QUERY }
       );
+
+      if (newEvents.length < 1) {
+        continue;
+      }
 
       const eventsToRecord = newEvents.map<TransferEvent>((event) => ({
         from: event.args.from?.toString(),
@@ -74,12 +79,16 @@ task(
 
     // Iterate over the events since the FROM_BLOCK
     let events: CreditIssuedEvent[] = [];
-    for (let i = FROM_BLOCK; i < TO_BLOCK; i += 1000n) {
+    for (let i = FROM_BLOCK; i < TO_BLOCK; i += BLOCKS_PER_QUERY) {
       console.log("Downloading events from block", i.toString());
       const newEvents = await contract.getEvents.CreditIssued(
         {},
-        { fromBlock: i, toBlock: i + 1000n }
+        { fromBlock: i, toBlock: i + BLOCKS_PER_QUERY }
       );
+
+      if (newEvents.length < 1) {
+        continue;
+      }
 
       const itemsToRecord = newEvents.map<CreditIssuedEvent>((event) => ({
         to: event.args.to?.toString(),
@@ -112,12 +121,16 @@ task(
 
     // Iterate over the events since the FROM_BLOCK
     let events: PaymentRecordedEvent[] = [];
-    for (let i = FROM_BLOCK; i < TO_BLOCK; i += 1000n) {
+    for (let i = FROM_BLOCK; i < TO_BLOCK; i += BLOCKS_PER_QUERY) {
       console.log("Downloading events from block", i.toString());
       const newEvents = await contract.getEvents.PaymentRecorded(
         {},
-        { fromBlock: i, toBlock: i + 1000n }
+        { fromBlock: i, toBlock: i + BLOCKS_PER_QUERY }
       );
+
+      if (newEvents.length < 1) {
+        continue;
+      }
 
       const itemsToSave = newEvents.map<PaymentRecordedEvent>((event) => ({
         tokenId: event.args.tokenId?.toString(),
