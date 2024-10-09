@@ -2,7 +2,8 @@
   "name": "hardhat-project",
   "scripts": {
     "download-transfers": "hardhat download-transfers --network celo",
-    "download-credit-issued": "hardhat download-credit-issued --network celo"
+    "download-credit-issued": "hardhat download-credit-issued --network celo",
+    "download-recorded-payments": "hardhat download-recorded-payments --network celo"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox-viem": "^3.0.0",
