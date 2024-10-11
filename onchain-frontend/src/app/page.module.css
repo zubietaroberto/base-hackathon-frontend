@@ -1,0 +1,3 @@
+.container :global(.MuiToolbar-root) :global(.MuiTypography-h6) {
+  padding-right: 1rem;
+}
