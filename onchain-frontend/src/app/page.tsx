@@ -1,20 +1,21 @@
 "use server";
 
-import { AppBar, Button, Toolbar, Typography } from "@mui/material";
-import styles from "./page.module.css";
-import { createClient } from "@supabase/supabase-js";
 import { TransferEvent } from "@/types";
-
-const supabase = createClient(
-  process.env.SUPABASE_URL ?? "",
-  process.env.SUPABASE_KEY ?? ""
-);
+import {
+  AppBar,
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  Toolbar,
+  Typography,
+} from "@mui/material";
+import styles from "./page.module.css";
+import { getPage } from "./serverSideFunctions";
+import { TokenList } from "./TokenList";
 
 export default async function Home() {
-  const nfts = await supabase
-    .from<"Transfer", TransferEvent>("Transfer")
-    .select("*")
-    .limit(100);
+  const nfts = await getPage(0);
 
   return (
     <main className={styles.container}>
@@ -28,17 +29,7 @@ export default async function Home() {
         </Toolbar>
       </AppBar>
 
-      <section className={styles.listContainer}>
-        {nfts.data &&
-          nfts.data.map((nft: TransferEvent) => (
-            <div key={nft.tokenId}>
-              <h1>{nft.tokenId}</h1>
-              <p>
-                {nft.from} -{">"} {nft.to}
-              </p>
-            </div>
-          ))}
-      </section>
+      <TokenList tokenEvents={nfts} />
     </main>
   );
 }
