@@ -1,15 +1,6 @@
 "use server";
 
-import { TransferEvent } from "@/types";
-import {
-  AppBar,
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  Toolbar,
-  Typography,
-} from "@mui/material";
+import { AppBar, Button, Toolbar, Typography } from "@mui/material";
 import styles from "./page.module.css";
 import { getPage } from "./serverSideFunctions";
 import { TokenList } from "./TokenList";

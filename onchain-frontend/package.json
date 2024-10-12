@@ -18,9 +18,11 @@
     "react-dom": "^18"
   },
   "devDependencies": {
+    "@types/big.js": "^6.2.2",
     "@types/node": "^22",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "big.js": "^6.2.2",
     "eslint": "^8",
     "eslint-config-next": "14.2.15",
     "typescript": "^5"
