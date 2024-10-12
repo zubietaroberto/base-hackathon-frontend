@@ -1,22 +1,20 @@
+import { Link } from "@/components/CustomLink";
 import {
-  Card,
-  CardHeader,
-  CardContent,
-  Typography,
-  CardActions,
   Button,
+  Card,
+  CardActions,
+  CardContent,
+  CardHeader,
+  Typography,
 } from "@mui/material";
 import Big from "big.js";
 import { PageResult } from "./serverSideFunctions";
-import { useRouter } from "next/navigation";
-import { Link } from "@/components/CustomLink";
 
 interface TokenItemProps {
   nft: PageResult;
 }
 
 export function TokenItem({ nft }: TokenItemProps) {
-  const router = useRouter();
   const creditSum = nft.credits.reduce((prev, value) => {
     return prev.add(new Big(value.totalRepaymentAmount ?? "0"));
   }, new Big(0));
