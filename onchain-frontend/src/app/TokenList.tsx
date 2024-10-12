@@ -11,6 +11,7 @@ import { useState } from "react";
 import styles from "./page.module.css";
 import { getPage, PageResult } from "./serverSideFunctions";
 import Big from "big.js";
+import { TokenItem } from "./TokenItem";
 
 interface TokenListProps {
   tokenEvents: PageResult[];
@@ -33,45 +34,9 @@ export function TokenList({ tokenEvents }: TokenListProps) {
   return (
     <>
       <section className={styles.listContainer}>
-        {nfts.map((nft) => {
-          const creditSum = nft.credits.reduce((prev, value) => {
-            return prev.add(new Big(value.totalRepaymentAmount ?? "0"));
-          }, new Big(0));
-
-          const paymentsSorted = nft.payments.sort((a, b) => {
-            return (
-              new Date(b.paymentDate ?? "").getTime() -
-              new Date(a.paymentDate ?? "").getTime()
-            );
-          });
-
-          let lastPaymentDate: string = "";
-          if (paymentsSorted.length > 0) {
-            if (paymentsSorted[0].paymentDate) {
-              try {
-                lastPaymentDate = new Date(
-                  Number(paymentsSorted[0].paymentDate) * 1000
-                ).toISOString();
-              } catch (error) {}
-            }
-          }
-
-          return (
-            <Card key={nft.tokenId}>
-              <CardHeader title={`Token Id: ${nft.tokenId}`} />
-              <CardContent>
-                <Typography>Credit given</Typography>
-                <Typography variant="body2">{creditSum.toString()}</Typography>
-                <Typography>Last Repayment</Typography>
-                {lastPaymentDate && (
-                  <Typography variant="body2">{lastPaymentDate}</Typography>
-                )}
-                <Typography>Receiver</Typography>
-                <Typography variant="body2">{nft.to}</Typography>
-              </CardContent>
-            </Card>
-          );
-        })}
+        {nfts.map((nft) => (
+          <TokenItem nft={nft} key={nft.tokenId} />
+        ))}
       </section>
 
       <footer className={styles.footer}>
