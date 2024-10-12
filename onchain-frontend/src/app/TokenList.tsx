@@ -2,9 +2,9 @@
 
 import { Button } from "@mui/material";
 import { useState } from "react";
-import styles from "./page.module.css";
 import { getPage, PageResult } from "./serverSideFunctions";
 import { TokenItem } from "./TokenItem";
+import styles from "./TokenList.module.css";
 
 interface TokenListProps {
   tokenEvents: PageResult[];

@@ -1,7 +1,6 @@
 "use server";
 
-import { AppBar, Button, Toolbar, Typography } from "@mui/material";
-import styles from "./page.module.css";
+import { NavBar } from "@/components/Navbar";
 import { getPage } from "./serverSideFunctions";
 import { TokenList } from "./TokenList";
 
@@ -9,16 +8,8 @@ export default async function Home() {
   const nfts = await getPage(0);
 
   return (
-    <main className={styles.container}>
-      <AppBar position="static">
-        <Toolbar>
-          <Typography variant="h6">OnchainBrowser</Typography>
-          <Button color="inherit">Browse</Button>
-          <Button color="inherit">105</Button>
-          <Button color="inherit">Loans</Button>
-          <Button color="inherit">Issued</Button>
-        </Toolbar>
-      </AppBar>
+    <main>
+      <NavBar />
 
       <TokenList tokenEvents={nfts} />
     </main>

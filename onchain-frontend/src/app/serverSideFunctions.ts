@@ -19,18 +19,9 @@ export type PageResult = TransferEvent & {
   credits: CreditIssuedEvent[];
 };
 
-export async function getPage(page: number): Promise<PageResult[]> {
-  const result = await supabase
-    .from("Transfer")
-    .select("*")
-    .eq("from", "0x0000000000000000000000000000000000000000")
-    .range(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
-
-  const transfers: TransferEvent[] = result.data ?? [];
-  if (transfers.length < 1) {
-    return [];
-  }
-
+export async function manualJoin(
+  transfers: TransferEvent[]
+): Promise<PageResult[]> {
   const transferIds = transfers.map((t) => t.tokenId);
   const creditsPromise = supabase
     .from("Credit Issued")
@@ -59,4 +50,39 @@ export async function getPage(page: number): Promise<PageResult[]> {
   }
 
   return join;
+}
+
+export async function getPage(page: number): Promise<PageResult[]> {
+  const result = await supabase
+    .from("Transfer")
+    .select("*")
+    .eq("from", "0x0000000000000000000000000000000000000000")
+    .range(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
+
+  const transfers: TransferEvent[] = result.data ?? [];
+  if (transfers.length < 1) {
+    return [];
+  }
+
+  const joins = await manualJoin(transfers);
+  return joins;
+}
+
+export async function getSingleItem(tokenId: string): Promise<PageResult> {
+  const transfer = await supabase
+    .from("Transfer")
+    .select("*")
+    .eq("tokenId", tokenId)
+    .single();
+
+  if (!transfer.data) {
+    throw new Error("Token not found");
+  }
+
+  const joins = await manualJoin([transfer.data]);
+  if (joins.length < 1) {
+    throw new Error("Token not found");
+  }
+
+  return joins[0];
 }

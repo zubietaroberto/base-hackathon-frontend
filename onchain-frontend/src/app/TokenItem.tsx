@@ -1,12 +1,22 @@
-import { Card, CardHeader, CardContent, Typography } from "@mui/material";
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  Typography,
+  CardActions,
+  Button,
+} from "@mui/material";
 import Big from "big.js";
 import { PageResult } from "./serverSideFunctions";
+import { useRouter } from "next/navigation";
+import { Link } from "@/components/CustomLink";
 
 interface TokenItemProps {
   nft: PageResult;
 }
 
 export function TokenItem({ nft }: TokenItemProps) {
+  const router = useRouter();
   const creditSum = nft.credits.reduce((prev, value) => {
     return prev.add(new Big(value.totalRepaymentAmount ?? "0"));
   }, new Big(0));
@@ -43,6 +53,14 @@ export function TokenItem({ nft }: TokenItemProps) {
         <Typography>Receiver</Typography>
         <Typography variant="body2">{nft.to}</Typography>
       </CardContent>
+
+      <CardActions>
+        <Link href={`/t/${nft.tokenId}`}>
+          <Button color="primary" variant="contained">
+            Details
+          </Button>
+        </Link>
+      </CardActions>
     </Card>
   );
 }

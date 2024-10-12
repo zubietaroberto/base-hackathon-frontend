@@ -1,0 +1,7 @@
+.navbar :global(.MuiToolbar-root) :global(.MuiTypography-h6) {
+  padding-right: 1rem;
+}
+
+.navbar :global(.MuiToolbar-root) a {
+  color: unset;
+}

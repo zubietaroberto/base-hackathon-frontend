@@ -1,4 +1,5 @@
 export interface TransferEvent {
+  id: number;
   from?: string;
   to?: string;
   tokenId?: string;
@@ -6,6 +7,7 @@ export interface TransferEvent {
 }
 
 export interface CreditIssuedEvent {
+  id: number;
   to?: string;
   tokenId?: string;
   principal?: string;
@@ -16,6 +18,7 @@ export interface CreditIssuedEvent {
 }
 
 export interface PaymentRecordedEvent {
+  id: number;
   tokenId?: string;
   paymentId?: string;
   paymentAmount?: string;
