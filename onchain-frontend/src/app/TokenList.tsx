@@ -1,16 +1,9 @@
 "use client";
 
-import {
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  Typography,
-} from "@mui/material";
+import { Button } from "@mui/material";
 import { useState } from "react";
 import styles from "./page.module.css";
 import { getPage, PageResult } from "./serverSideFunctions";
-import Big from "big.js";
 import { TokenItem } from "./TokenItem";
 
 interface TokenListProps {

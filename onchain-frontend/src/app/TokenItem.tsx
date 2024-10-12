@@ -24,7 +24,7 @@ export function TokenItem({ nft }: TokenItemProps) {
       try {
         const ms = Number(paymentsSorted[0].paymentDate) * 1000;
         lastPaymentDate = new Date(ms).toISOString();
-      } catch (error) {}
+      } catch {}
     }
   }
 
