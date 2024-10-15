@@ -1,4 +1,3 @@
-import { Link } from "@/components/CustomLink";
 import {
   Button,
   Card,
@@ -53,11 +52,9 @@ export function TokenItem({ nft }: TokenItemProps) {
       </CardContent>
 
       <CardActions>
-        <Link href={`/t/${nft.tokenId}`}>
-          <Button color="primary" variant="contained">
-            Details
-          </Button>
-        </Link>
+        <Button variant="contained" href={`/t/${nft.tokenId}`}>
+          View
+        </Button>
       </CardActions>
     </Card>
   );

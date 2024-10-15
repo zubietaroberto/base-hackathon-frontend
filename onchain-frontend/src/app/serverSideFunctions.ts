@@ -86,3 +86,23 @@ export async function getSingleItem(tokenId: string): Promise<PageResult> {
 
   return joins[0];
 }
+
+export async function searchByAddress(address: string) {
+  const transfers = await supabase
+    .from("Transfer")
+    .select("*")
+    .like("to", address)
+    .limit(30);
+
+  return manualJoin(transfers.data ?? []);
+}
+
+export async function searchByTokenId(text: string) {
+  const transfers = await supabase
+    .from("Transfer")
+    .select("*")
+    .like("tokenId", text)
+    .limit(30);
+
+  return manualJoin(transfers.data ?? []);
+}

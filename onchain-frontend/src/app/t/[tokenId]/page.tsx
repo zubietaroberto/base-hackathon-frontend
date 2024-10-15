@@ -1,7 +1,7 @@
 "use server";
 
 import { getSingleItem } from "@/app/serverSideFunctions";
-import { NavBar } from "@/components/Navbar";
+import { NavBar } from "@/app/(Navbar)";
 import { Typography } from "@mui/material";
 import { Fragment } from "react";
 import styles from "./page.module.css";

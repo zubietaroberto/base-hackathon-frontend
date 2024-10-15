@@ -1,6 +1,7 @@
 "use server";
 
-import { NavBar } from "@/components/Navbar";
+import { NavBar } from "./(Navbar)";
+import { SearchBar } from "./(SearchBar)";
 import { getPage } from "./serverSideFunctions";
 import { TokenList } from "./TokenList";
 
@@ -10,7 +11,7 @@ export default async function Home() {
   return (
     <main>
       <NavBar />
-
+      <SearchBar />
       <TokenList tokenEvents={nfts} />
     </main>
   );
