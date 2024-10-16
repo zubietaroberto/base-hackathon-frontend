@@ -6,22 +6,19 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol"; // Import SafeMath library
 
 /**
- * @title RodaCreditCOP
- * @dev This contract represents a credit token with outstanding balance, issuance date, and credit term.
+ * @title RodaLoanCOP
+ * @dev This contract represents a loan token with outstanding balance, issuance date, and loan term.
  */
-contract RodaCreditCOP is ERC721, AccessControl {
+contract RodaLoanCOP is ERC721, AccessControl {
     using SafeMath for uint; // Use SafeMath for uint type
 
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
 
-    // Creating a mapping to store the principal for each token ID.
     mapping(uint => uint) public principal;
-    // Creating a mapping to store the outstandingBalance for each token ID.
     mapping(uint => uint) public outstandingBalance;
-    // Creating a mapping to store the issuanceDate for each token ID.
     mapping(uint => uint) public issuanceDate;
-    // Creating a mapping to store the creditTerm for each token ID.
-    mapping(uint => uint) public creditTerm;
+    mapping(uint => uint) public loanTerm;
+    mapping(uint => uint) private loanPurpose;
 
     // Payment struct to store payment information
     struct Payment {
@@ -31,78 +28,82 @@ contract RodaCreditCOP is ERC721, AccessControl {
     }
 
     // Mapping to store an array of payments for each token ID
-    mapping(uint => mapping(uint => Payment)) public creditPayments;
+    mapping(uint => mapping(uint => Payment)) public loanPayments;
 
     // Mapping to ensure the uniqueness of payment IDs
-    mapping(uint => uint) public paymentToCredit;
+    mapping(uint => uint) public paymentToLoan;
 
-    constructor() ERC721("RodaCreditCOP", "RCCOP") {
+    constructor() ERC721("RodaLoanCOP", "RCCOP") {
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _grantRole(MINTER_ROLE, msg.sender);
     }
 
-    event CreditIssued(
+    event LoanIssued(
         address indexed to,
-        uint256 indexed tokenId,
-        uint256 principal,
+        uint indexed tokenId,
+        uint principal,
         uint totalRepaymentAmount,
-        uint256 issuanceDate,
-        uint256 creditTerm
+        uint issuanceDate,
+        uint loanTerm,
+        uint loanPurpose
     );
 
     event PaymentRecorded(
-        uint256 indexed tokenId,
-        uint256 paymentId,
-        uint256 paymentAmount,
-        uint256 paymentDate
+        uint indexed tokenId,
+        uint paymentId,
+        uint paymentAmount,
+        uint paymentDate
     );
 
-    function issueCredit(
+    function issueLoan(
         address to,
-        uint creditId,
+        uint loanId,
         uint _principal,
         uint totalRepaymentAmount,
         uint _issuanceDate,
-        uint _creditTerm
+        uint _loanTerm,
+        uint _loanPurpose
     ) public onlyRole(MINTER_ROLE) {
-        principal[creditId] = _principal;
-        outstandingBalance[creditId] = totalRepaymentAmount; // Setting the outstandingBalance at mint time.
-        issuanceDate[creditId] = _issuanceDate; // Setting the issuanceDate from the parameter.
-        creditTerm[creditId] = _creditTerm; // Setting the creditTerm from the parameter.
+        principal[loanId] = _principal;
+        outstandingBalance[loanId] = totalRepaymentAmount;
+        issuanceDate[loanId] = _issuanceDate;
+        loanTerm[loanId] = _loanTerm;
+        loanPurpose[loanId] = _loanPurpose;
 
-        _safeMint(to, creditId); // Effects should be called last.
+        _safeMint(to, loanId); // Effects should be called last.
 
-        emit CreditIssued(
+        emit LoanIssued(
             to,
-            creditId,
+            loanId,
             _principal,
             totalRepaymentAmount,
             _issuanceDate,
-            _creditTerm
+            _loanTerm,
+            _loanPurpose
         );
     }
 
     // Function to update the outstandingBalance and record the payment with paymentDate
     function recordPayment(
-        uint creditId,
+        uint loanId,
         uint paymentId,
         uint paymentAmount,
         uint paymentDate
     ) public onlyRole(DEFAULT_ADMIN_ROLE) {
-        require(paymentToCredit[paymentId] == 0); // (make sure IDs in the original database can't be zero)
-        outstandingBalance[creditId] = outstandingBalance[creditId].sub(
+        require(paymentToLoan[paymentId] == 0); // (make sure IDs in the original database can't be zero)
+        outstandingBalance[loanId] = outstandingBalance[loanId].sub(
             paymentAmount
         ); // Safely subtract paymentAmount
 
         // Add the payment with the paymentDate to the payments mapping
-        creditPayments[creditId][paymentId] = Payment({
+        loanPayments[loanId][paymentId] = Payment({
             id: paymentId,
             amount: paymentAmount,
             date: paymentDate
         });
-        paymentToCredit[paymentId] = creditId;
+        paymentToLoan[paymentId] = loanId;
 
-        emit PaymentRecorded(creditId, paymentId, paymentAmount, paymentDate);
+        emit PaymentRecorded(loanId, paymentId, paymentAmount, paymentDate);
     }
 
     function supportsInterface(

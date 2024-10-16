@@ -5,13 +5,14 @@ export interface TransferEvent {
   blockNumber?: string;
 }
 
-export interface CreditIssuedEvent {
+export interface LoanIssued {
   to?: string;
   tokenId?: string;
   principal?: string;
   totalRepaymentAmount?: string;
   issuanceDate?: string;
-  creditTerm?: string;
+  loanTerm?: string;
+  loanPurpose?: string;
   blockNumber?: string;
 }
 
