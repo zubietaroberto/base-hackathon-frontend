@@ -2,6 +2,7 @@ import "@nomicfoundation/hardhat-toolbox-viem";
 import { createClient } from "@supabase/supabase-js";
 import "dotenv/config";
 import { type HardhatUserConfig, task } from "hardhat/config";
+import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { LoanIssued, PaymentRecordedEvent, TransferEvent } from "./src/types";
 import { getLastBlockNumber } from "./src/utils";
 
@@ -39,130 +40,81 @@ const config: HardhatUserConfig = {
   },
 };
 
+async function downloadEvents<T>(
+  hre: HardhatRuntimeEnvironment,
+  eventName: "LoanIssued" | "PaymentRecorded" | "Transfer",
+  tableName: string,
+  mapEvent: (event: any) => T
+) {
+  const contract = await hre.viem.getContractAt(
+    "RodaLoanCOP",
+    CONTRACT_ADDRESS
+  );
+
+  const lastBlock = TO_BLOCK ?? (await getLastBlockNumber(hre));
+  const events: T[] = [];
+
+  for (let i = FROM_BLOCK; i < lastBlock; i += BLOCKS_PER_QUERY) {
+    console.log("Downloading events from block", i.toString());
+    const newEvents = await contract.getEvents[eventName](
+      {},
+      { fromBlock: i, toBlock: i + BLOCKS_PER_QUERY }
+    );
+
+    if (newEvents.length < 1) continue;
+
+    const itemsToRecord = newEvents.map(mapEvent);
+    await supabaseClient.from(tableName).insert(itemsToRecord);
+    events.push(...itemsToRecord);
+    console.log("Downloaded", events.length, "events");
+  }
+
+  console.log("Done");
+}
+
 task(
   "download-transfers",
   "Downloads existing transfers from the blockchain",
-  async (_, hre) => {
-    const contract = await hre.viem.getContractAt(
-      "RodaLoanCOP",
-      CONTRACT_ADDRESS
-    );
-
-    const lastBlock = TO_BLOCK ?? (await getLastBlockNumber(hre));
-
-    // Iterate over the events since the FROM_BLOCK
-    let events: TransferEvent[] = [];
-    for (let i = FROM_BLOCK; i < lastBlock; i += BLOCKS_PER_QUERY) {
-      console.log("Downloading events from block", i.toString());
-      const newEvents = await contract.getEvents.Transfer(
-        {},
-        { fromBlock: i, toBlock: i + BLOCKS_PER_QUERY }
-      );
-
-      if (newEvents.length < 1) {
-        continue;
-      }
-
-      const eventsToRecord = newEvents.map<TransferEvent>((event) => ({
-        from: event.args.from?.toString(),
-        to: event.args.to?.toString(),
-        tokenId: event.args.tokenId?.toString(),
-        blockNumber: event.blockNumber.toString(),
-      }));
-
-      await supabaseClient.from("Transfer").insert(eventsToRecord);
-      events.push(...eventsToRecord);
-      console.log("Downloaded", events.length, "events");
-    }
-
-    console.log("Done");
-  }
+  async (_, hre) =>
+    downloadEvents<TransferEvent>(hre, "Transfer", "Transfer", (event) => ({
+      from: event.args.from?.toString(),
+      to: event.args.to?.toString(),
+      tokenId: event.args.tokenId?.toString(),
+      blockNumber: event.blockNumber.toString(),
+    }))
 );
 
 task(
   "download-loan-issued",
-  "Downloads existing payments from the blockchain",
-  async (_, hre) => {
-    const contract = await hre.viem.getContractAt(
-      "RodaLoanCOP",
-      CONTRACT_ADDRESS
-    );
-
-    const lastBlock = TO_BLOCK ?? (await getLastBlockNumber(hre));
-
-    // Iterate over the events since the FROM_BLOCK
-    let events: LoanIssued[] = [];
-    for (let i = FROM_BLOCK; i < lastBlock; i += BLOCKS_PER_QUERY) {
-      console.log("Downloading events from block", i.toString());
-      const newEvents = await contract.getEvents.LoanIssued(
-        {},
-        { fromBlock: i, toBlock: i + BLOCKS_PER_QUERY }
-      );
-
-      if (newEvents.length < 1) {
-        continue;
-      }
-
-      const itemsToRecord = newEvents.map<LoanIssued>((event) => ({
-        to: event.args.to?.toString(),
-        tokenId: event.args.tokenId?.toString(),
-        principal: event.args.principal?.toString(),
-        totalRepaymentAmount: event.args.totalRepaymentAmount?.toString(),
-        issuanceDate: event.args.issuanceDate?.toString(),
-        loanTerm: event.args.loanTerm?.toString(),
-        loanPurpose: event.args.loanPurpose?.toString(),
-        blockNumber: event.blockNumber.toString(),
-      }));
-
-      await supabaseClient.from("Loan Issued").insert(itemsToRecord);
-      events.push(...itemsToRecord);
-
-      console.log("Downloaded", events.length, "events");
-    }
-
-    console.log("Done");
-  }
+  "Downloads existing loans from the blockchain",
+  async (_, hre) =>
+    downloadEvents<LoanIssued>(hre, "LoanIssued", "Loan Issued", (event) => ({
+      to: event.args.to?.toString(),
+      tokenId: event.args.tokenId?.toString(),
+      principal: event.args.principal?.toString(),
+      totalRepaymentAmount: event.args.totalRepaymentAmount?.toString(),
+      issuanceDate: event.args.issuanceDate?.toString(),
+      loanTerm: event.args.loanTerm?.toString(),
+      loanPurpose: event.args.loanPurpose?.toString(),
+      blockNumber: event.blockNumber.toString(),
+    }))
 );
 
 task(
   "download-recorded-payments",
   "Downloads existing payments from the blockchain",
-  async (_, hre) => {
-    const contract = await hre.viem.getContractAt(
-      "RodaLoanCOP",
-      CONTRACT_ADDRESS
-    );
-
-    const lastBlock = TO_BLOCK ?? (await getLastBlockNumber(hre));
-
-    // Iterate over the events since the FROM_BLOCK
-    let events: PaymentRecordedEvent[] = [];
-    for (let i = FROM_BLOCK; i < lastBlock; i += BLOCKS_PER_QUERY) {
-      console.log("Downloading events from block", i.toString());
-      const newEvents = await contract.getEvents.PaymentRecorded(
-        {},
-        { fromBlock: i, toBlock: i + BLOCKS_PER_QUERY }
-      );
-
-      if (newEvents.length < 1) {
-        continue;
-      }
-
-      const itemsToSave = newEvents.map<PaymentRecordedEvent>((event) => ({
+  async (_, hre) =>
+    downloadEvents<PaymentRecordedEvent>(
+      hre,
+      "PaymentRecorded",
+      "Payment Recorded",
+      (event) => ({
         tokenId: event.args.tokenId?.toString(),
         paymentId: event.args.paymentId?.toString(),
         paymentAmount: event.args.paymentAmount?.toString(),
         paymentDate: event.args.paymentDate?.toString(),
-      }));
-
-      await supabaseClient.from("Payment Recorded").insert(itemsToSave);
-      events.push(...itemsToSave);
-
-      console.log("Downloaded", events.length, "events");
-    }
-
-    console.log("Done");
-  }
+      })
+    )
 );
 
 export default config;
