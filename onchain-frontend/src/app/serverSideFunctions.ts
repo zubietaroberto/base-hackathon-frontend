@@ -24,7 +24,7 @@ export async function manualJoin(
 ): Promise<PageResult[]> {
   const transferIds = transfers.map((t) => t.tokenId);
   const creditsPromise = supabase
-    .from("Credit Issued")
+    .from("Loan Issued")
     .select("*")
     .in("tokenId", [transferIds]);
   const paymentsPromise = supabase
