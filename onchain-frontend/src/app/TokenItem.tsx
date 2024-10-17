@@ -8,6 +8,7 @@ import {
 } from "@mui/material";
 import Big from "big.js";
 import { PageResult } from "./serverSideFunctions";
+import classes from "./TokenItem.module.css";
 
 interface TokenItemProps {
   nft: PageResult;
@@ -36,7 +37,7 @@ export function TokenItem({ nft }: TokenItemProps) {
   }
 
   return (
-    <Card>
+    <Card className={classes.container}>
       <CardHeader title={`Token Id: ${nft.tokenId}`} />
       <CardContent>
         <Typography>Credit given</Typography>
