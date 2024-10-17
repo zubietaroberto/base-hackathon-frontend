@@ -5,6 +5,22 @@
   }
 }
 
+.container :global(.MuiCardContent-root) {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-gap: 10px;
+  padding: 10px;
+}
+
+.container :global(.MuiCardContent-root) :global(.MuiTypography-root) {
+  line-height: 1rem;
+  align-self: baseline;
+}
+
+.container :global(.MuiCardContent-root) :global(.MuiTypography-body2) {
+  text-align: right;
+}
+
 .container :global(.MuiTypography-body2) {
   overflow-wrap: break-word;
 }

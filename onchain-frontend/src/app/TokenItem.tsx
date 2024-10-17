@@ -62,16 +62,16 @@ export function TokenItem({ nft }: TokenItemProps) {
     <Card className={classes.container}>
       <CardHeader title={`Token Id: ${nft.tokenId}`} />
       <CardContent>
-        <Typography>Credit given</Typography>
-        <Typography variant="body2">{creditSum.toString()}</Typography>
-        <Typography>Credit Date</Typography>
-        <Typography variant="body2">{creditDate}</Typography>
-        <Typography>Last Repayment</Typography>
-        <Typography variant="body2">{lastPaymentDate}</Typography>
-        <Typography>Receiver</Typography>
-        <Typography variant="body2">{nft.to}</Typography>
-        <Typography>Loan Purpose</Typography>
-        <Typography variant="body2">{loanPurpose}</Typography>
+        <Typography variant="body2">Credit given</Typography>
+        <Typography>{creditSum.toString()}</Typography>
+        <Typography variant="body2">Credit Date</Typography>
+        <Typography>{creditDate}</Typography>
+        <Typography variant="body2">Last Repayment</Typography>
+        <Typography>{lastPaymentDate}</Typography>
+        <Typography variant="body2">Receiver</Typography>
+        <Typography>{nft.to}</Typography>
+        <Typography variant="body2">Loan Purpose</Typography>
+        <Typography>{loanPurpose}</Typography>
       </CardContent>
 
       <CardActions>
