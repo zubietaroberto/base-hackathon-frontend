@@ -17,6 +17,17 @@ export interface CreditIssuedEvent {
   blockNumber?: string;
 }
 
+export interface LoanIssuedEvent {
+  to?: string;
+  tokenId?: string;
+  principal?: string;
+  totalRepaymentAmount?: string;
+  issuanceDate?: string;
+  loanTerm?: string;
+  loanPurpose?: string;
+  blockNumber?: string;
+}
+
 export interface PaymentRecordedEvent {
   id: number;
   tokenId?: string;

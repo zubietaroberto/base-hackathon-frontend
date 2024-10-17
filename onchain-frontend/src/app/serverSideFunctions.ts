@@ -1,10 +1,6 @@
 "use server";
 
-import {
-  CreditIssuedEvent,
-  PaymentRecordedEvent,
-  TransferEvent,
-} from "@/types";
+import { LoanIssuedEvent, PaymentRecordedEvent, TransferEvent } from "@/types";
 import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient(
@@ -16,7 +12,7 @@ const PAGE_SIZE = 100;
 
 export type PageResult = TransferEvent & {
   payments: PaymentRecordedEvent[];
-  credits: CreditIssuedEvent[];
+  credits: LoanIssuedEvent[];
 };
 
 export async function manualJoin(
@@ -37,7 +33,7 @@ export async function manualJoin(
     paymentsPromise,
   ]);
 
-  const credits: CreditIssuedEvent[] = creditsResponse.data ?? [];
+  const credits: LoanIssuedEvent[] = creditsResponse.data ?? [];
   const payments: PaymentRecordedEvent[] = paymentsResponse.data ?? [];
 
   const join: PageResult[] = [];
