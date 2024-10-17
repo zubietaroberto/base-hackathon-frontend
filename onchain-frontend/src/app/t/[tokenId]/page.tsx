@@ -2,6 +2,7 @@
 
 import { NavBar } from "@/app/(Navbar)";
 import { getSingleItem } from "@/app/serverSideFunctions";
+import { LoanPurpose } from "@/types";
 import { Typography } from "@mui/material";
 import { Fragment } from "react";
 import styles from "./page.module.css";
@@ -24,13 +25,25 @@ export default async function ServerSideTokenPage({
   }, 0);
   const totalDebt = totalOwed - totalPaid;
 
+  let loanPurpose = "Unknown";
+  if (item.credits.length > 0) {
+    const purpose = item.credits[0].loanPurpose;
+    if (purpose) {
+      const value = LoanPurpose[purpose as keyof typeof LoanPurpose];
+      if (value) {
+        loanPurpose = value;
+      }
+    }
+  }
+
   return (
     <main>
       <NavBar />
 
       <header className={styles.header}>
         <Typography variant="h4">Token {tokenId}</Typography>
-        <Typography variant="h6">To: {item.to}</Typography>
+        <Typography>To: {item.to}</Typography>
+        <Typography>Loan Purpose: {loanPurpose}</Typography>
       </header>
 
       <section className={styles.section}>

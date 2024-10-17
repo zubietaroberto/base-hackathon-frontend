@@ -7,6 +7,7 @@ export interface TransferEvent {
 }
 
 export interface LoanIssuedEvent {
+  id: number;
   to?: string;
   tokenId?: string;
   principal?: string;
