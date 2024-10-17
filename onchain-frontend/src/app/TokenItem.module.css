@@ -1,4 +1,10 @@
-.container {
-  max-width: 800px;
-  margin: 0 auto;
+@media screen and (min-width: 600px) {
+  .container {
+    width: 600px;
+    margin: 0 auto;
+  }
+}
+
+.container :global(.MuiTypography-body2) {
+  overflow-wrap: break-word;
 }
