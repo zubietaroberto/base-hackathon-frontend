@@ -11,6 +11,11 @@ import { PageResult } from "./serverSideFunctions";
 import classes from "./TokenItem.module.css";
 import { LoanPurpose } from "@/types";
 
+const MONEY_FORMAT = Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "COP",
+});
+
 interface TokenItemProps {
   nft: PageResult;
 }
@@ -25,27 +30,14 @@ export function TokenItem({ nft }: TokenItemProps) {
     if (nft.credits[0].issuanceDate) {
       try {
         const ms = Number(nft.credits[0].issuanceDate) * 1000;
-        creditDate = new Date(ms).toISOString();
+        creditDate = new Date(ms).toLocaleDateString("en-US");
       } catch {}
     }
   }
 
-  const paymentsSorted = nft.payments.sort((a, b) => {
-    return (
-      new Date(b.paymentDate ?? "").getTime() -
-      new Date(a.paymentDate ?? "").getTime()
-    );
-  });
-
-  let lastPaymentDate: string = "Never";
-  if (paymentsSorted.length > 0) {
-    if (paymentsSorted[0].paymentDate) {
-      try {
-        const ms = Number(paymentsSorted[0].paymentDate) * 1000;
-        lastPaymentDate = new Date(ms).toISOString();
-      } catch {}
-    }
-  }
+  const totalRepaid = nft.payments.reduce((prev, value) => {
+    return prev.add(new Big(value.paymentAmount ?? "0"));
+  }, new Big(0));
 
   let loanPurpose = "Unknown";
   if (nft.credits.length > 0) {
@@ -58,25 +50,42 @@ export function TokenItem({ nft }: TokenItemProps) {
     }
   }
 
+  const text = `Loan issued on ${creditDate} to ${nft.to}.`;
+  const amount = MONEY_FORMAT.format(Number(creditSum));
+  const amountLeftToBeRepaidNumber = creditSum.sub(totalRepaid);
+  const amountLeftToBeRepaid = amountLeftToBeRepaidNumber.gt(new Big(0))
+    ? MONEY_FORMAT.format(Number(amountLeftToBeRepaidNumber))
+    : "Fully repaid";
+
   return (
     <Card className={classes.container}>
       <CardHeader title={`Token Id: ${nft.tokenId}`} />
       <CardContent>
-        <Typography variant="body2">Credit given</Typography>
-        <Typography>{creditSum.toString()}</Typography>
-        <Typography variant="body2">Credit Date</Typography>
-        <Typography>{creditDate}</Typography>
-        <Typography variant="body2">Last Repayment</Typography>
-        <Typography>{lastPaymentDate}</Typography>
-        <Typography variant="body2">Receiver</Typography>
-        <Typography>{nft.to}</Typography>
+        <Typography className={classes["double-width"]}>{text}</Typography>
         <Typography variant="body2">Loan Purpose</Typography>
         <Typography>{loanPurpose}</Typography>
+        <Typography variant="body2">Loan amount</Typography>
+        <Typography>{amount}</Typography>
+        <Typography variant="body2">Amount left to be repaid</Typography>
+        <Typography>{amountLeftToBeRepaid}</Typography>
+        <Typography variant="body2">Payment History</Typography>
+        <Typography>
+          {nft.payments.length > 0
+            ? `${nft.payments.length} payments made`
+            : "No payment history"}
+        </Typography>
       </CardContent>
 
       <CardActions>
         <Button variant="contained" href={`/t/${nft.tokenId}`}>
-          View
+          Details
+        </Button>
+
+        <Button
+          variant="contained"
+          href={`https://sepolia.basescan.org/address/${nft.to}`}
+        >
+          See in BaseScan
         </Button>
       </CardActions>
     </Card>

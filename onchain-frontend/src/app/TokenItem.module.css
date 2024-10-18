@@ -24,3 +24,8 @@
 .container :global(.MuiTypography-body2) {
   overflow-wrap: break-word;
 }
+
+.double-width {
+  grid-column: span 2;
+  overflow-wrap: break-word;
+}
