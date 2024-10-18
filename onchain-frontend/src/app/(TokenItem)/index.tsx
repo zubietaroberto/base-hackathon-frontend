@@ -1,19 +1,24 @@
 import {
+  Avatar,
   Button,
   Card,
   CardActions,
   CardContent,
   CardHeader,
+  Link,
   Typography,
 } from "@mui/material";
+import { Folder } from "@mui/icons-material";
 import Big from "big.js";
-import { PageResult } from "./serverSideFunctions";
-import classes from "./TokenItem.module.css";
+import { PageResult } from "../serverSideFunctions";
+import classes from "./index.module.css";
 import { LoanPurpose } from "@/types";
 
+const CONTRACT_ADDRESS = "0xc743d9ab2d396176ade68bf72c5ab1ac20693cbf";
 const MONEY_FORMAT = Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "COP",
+  minimumFractionDigits: 0,
 });
 
 interface TokenItemProps {
@@ -50,23 +55,41 @@ export function TokenItem({ nft }: TokenItemProps) {
     }
   }
 
-  const text = `Loan issued on ${creditDate} to ${nft.to}.`;
+  const truncatedAddress = nft.to
+    ? nft.to.slice(0, 6) + "..." + nft.to.slice(-4)
+    : "Unknown";
+
+  const linkToAddress = `https://sepolia.basescan.org/address/${nft.to}`;
+  const text = (
+    <>
+      {`Loan issued on ${creditDate} to `}
+      <Link href={linkToAddress}>{truncatedAddress}</Link>
+    </>
+  );
   const amount = MONEY_FORMAT.format(Number(creditSum));
   const amountLeftToBeRepaidNumber = creditSum.sub(totalRepaid);
   const amountLeftToBeRepaid = amountLeftToBeRepaidNumber.gt(new Big(0))
     ? MONEY_FORMAT.format(Number(amountLeftToBeRepaidNumber))
     : "Fully repaid";
+  const nftUrl = `https://sepolia.basescan.org/nft/${CONTRACT_ADDRESS}/${nft.tokenId}`;
 
   return (
     <Card className={classes.container}>
-      <CardHeader title={`Token Id: ${nft.tokenId}`} />
+      <CardHeader
+        title={`Loan #${nft.tokenId}`}
+        subheader={text}
+        avatar={
+          <Avatar sx={{ bgcolor: "red" }}>
+            <Folder />
+          </Avatar>
+        }
+      />
       <CardContent>
-        <Typography className={classes["double-width"]}>{text}</Typography>
         <Typography variant="body2">Loan Purpose</Typography>
         <Typography>{loanPurpose}</Typography>
         <Typography variant="body2">Loan amount</Typography>
         <Typography>{amount}</Typography>
-        <Typography variant="body2">Amount left to be repaid</Typography>
+        <Typography variant="body2">To be repaid</Typography>
         <Typography>{amountLeftToBeRepaid}</Typography>
         <Typography variant="body2">Payment History</Typography>
         <Typography>
@@ -77,15 +100,8 @@ export function TokenItem({ nft }: TokenItemProps) {
       </CardContent>
 
       <CardActions>
-        <Button variant="contained" href={`/t/${nft.tokenId}`}>
-          Details
-        </Button>
-
-        <Button
-          variant="contained"
-          href={`https://sepolia.basescan.org/address/${nft.to}`}
-        >
-          See in BaseScan
+        <Button variant="contained" href={nftUrl}>
+          View NFT Onchain
         </Button>
       </CardActions>
     </Card>

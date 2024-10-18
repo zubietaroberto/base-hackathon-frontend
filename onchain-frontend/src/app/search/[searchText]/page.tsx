@@ -4,7 +4,7 @@ import { NavBar } from "@/app/(Navbar)";
 import { searchByAddress, searchByTokenId } from "@/app/serverSideFunctions";
 import { Typography } from "@mui/material";
 import styles from "./page.module.css";
-import { SearchResult } from "./SearchResult";
+import { TokenItem } from "@/app/(TokenItem)";
 
 interface Params {
   searchText: string;
@@ -36,7 +36,7 @@ export default async function SearchPage({
         <section className={styles.section}>
           <Typography variant="h4">Results by receiving address</Typography>
           {tokensByAddress.map((token) => (
-            <SearchResult key={token.id} item={token} />
+            <TokenItem key={token.id} nft={token} />
           ))}
         </section>
       ) : (
@@ -49,7 +49,7 @@ export default async function SearchPage({
         <section className={styles.section}>
           <Typography variant="h4">Results by token ID</Typography>
           {tokensById.map((token) => (
-            <SearchResult key={token.id} item={token} />
+            <TokenItem key={token.id} nft={token} />
           ))}
         </section>
       ) : (

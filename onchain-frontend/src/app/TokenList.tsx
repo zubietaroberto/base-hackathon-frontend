@@ -2,8 +2,8 @@
 
 import { Button } from "@mui/material";
 import { useState } from "react";
+import { TokenItem } from "./(TokenItem)";
 import { getPage, PageResult } from "./serverSideFunctions";
-import { TokenItem } from "./TokenItem";
 import styles from "./TokenList.module.css";
 
 interface TokenListProps {
