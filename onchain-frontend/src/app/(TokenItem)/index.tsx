@@ -1,5 +1,5 @@
+import { LoanPurpose } from "@/types";
 import {
-  Avatar,
   Button,
   Card,
   CardActions,
@@ -8,11 +8,10 @@ import {
   Link,
   Typography,
 } from "@mui/material";
-import { Folder } from "@mui/icons-material";
 import Big from "big.js";
 import { PageResult } from "../serverSideFunctions";
 import classes from "./index.module.css";
-import { LoanPurpose } from "@/types";
+import { TokenAvatar } from "./TokenAvatar";
 
 const CONTRACT_ADDRESS = "0xc743d9ab2d396176ade68bf72c5ab1ac20693cbf";
 const MONEY_FORMAT = Intl.NumberFormat("en-US", {
@@ -78,11 +77,7 @@ export function TokenItem({ nft }: TokenItemProps) {
       <CardHeader
         title={`Loan #${nft.tokenId}`}
         subheader={text}
-        avatar={
-          <Avatar sx={{ bgcolor: "red" }}>
-            <Folder />
-          </Avatar>
-        }
+        avatar={<TokenAvatar nft={nft} />}
       />
       <CardContent>
         <Typography variant="body2">Loan Purpose</Typography>
