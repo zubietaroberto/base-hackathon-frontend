@@ -1,5 +1,6 @@
 "use server";
 
+import { Card, CardContent, CardHeader, Typography } from "@mui/material";
 import { NavBar } from "./(Navbar)";
 import { SearchBar } from "./(SearchBar)";
 import { getPage } from "./serverSideFunctions";
@@ -12,6 +13,17 @@ export default async function Home() {
     <main>
       <NavBar />
       <SearchBar />
+
+      <Card>
+        <CardHeader title="NFTs available onchain" />
+        <CardContent>
+          <Typography>
+            This is a list of all NFTs recorded in the blockchain. If your loan
+            is approved it will appear here too
+          </Typography>
+        </CardContent>
+      </Card>
+
       <TokenList tokenEvents={nfts} />
     </main>
   );
