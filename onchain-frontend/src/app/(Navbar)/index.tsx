@@ -1,5 +1,4 @@
-import { AppBar, Button, Toolbar, Typography } from "@mui/material";
-import Link from "next/link";
+import { AppBar, Toolbar, Typography } from "@mui/material";
 import styles from "./index.module.css";
 
 export function NavBar() {
