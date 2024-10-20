@@ -6,10 +6,7 @@ export function NavBar() {
   return (
     <AppBar position="static" className={styles.navbar}>
       <Toolbar>
-        <Typography variant="h6">OnchainBrowser</Typography>
-        <Link href="/">
-          <Button color="inherit">Home</Button>
-        </Link>
+        <Typography variant="h6">Loans explorer</Typography>
       </Toolbar>
     </AppBar>
   );
