@@ -58,7 +58,7 @@ export function TokenItem({ nft }: TokenItemProps) {
     ? nft.to.slice(0, 6) + "..." + nft.to.slice(-4)
     : "Unknown";
 
-  const linkToAddress = `https://sepolia.basescan.org/address/${nft.to}`;
+  const linkToAddress = `https://sepolia.basescan.org/address/${nft.to}#nfttransfers`;
   const text = (
     <>
       {`Loan issued on ${creditDate} to `}
