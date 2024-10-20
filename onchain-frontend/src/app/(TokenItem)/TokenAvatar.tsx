@@ -1,4 +1,5 @@
 import {
+  BatteryStd,
   DirectionsBike,
   Folder,
   Handyman,
@@ -11,7 +12,6 @@ import {
   WarningAmber,
 } from "@mui/icons-material";
 import { Avatar } from "@mui/material";
-import { PageResult } from "../serverSideFunctions";
 import {
   amber,
   deepOrange,
@@ -19,6 +19,7 @@ import {
   lightGreen,
   orange,
 } from "@mui/material/colors";
+import { PageResult } from "../serverSideFunctions";
 
 interface TokenAvatarProps {
   nft: PageResult;
@@ -33,19 +34,24 @@ export function TokenAvatar({ nft }: TokenAvatarProps) {
   }
 
   switch (nft.credits[0].loanPurpose) {
-    case "1":
+    case "0":
       color = lightBlue[500];
       inner = <Smartphone />;
       break;
 
-    case "2":
+    case "1":
       color = lightGreen[500];
       inner = <TwoWheeler />;
       break;
 
-    case "3":
+    case "2":
       color = lightGreen[500];
       inner = <DirectionsBike />;
+      break;
+
+    case "3":
+      color = lightGreen[500];
+      inner = <BatteryStd />;
       break;
 
     case "4":
