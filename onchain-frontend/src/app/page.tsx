@@ -2,6 +2,7 @@
 
 import { Card, CardContent, CardHeader, Typography } from "@mui/material";
 import { NavBar } from "./(Navbar)";
+import { SearchBar } from "./(SearchBar)";
 import { getPage } from "./serverSideFunctions";
 import { TokenList } from "./TokenList";
 
@@ -11,13 +12,17 @@ export default async function Home() {
   return (
     <main>
       <NavBar />
+      <SearchBar />
 
       <Card>
-        <CardHeader title="NFTs available onchain" />
+        <CardHeader title="Roda's onchain loanbook" />
         <CardContent>
           <Typography>
-            This is a list of all NFTs recorded in the blockchain. If your loan
-            is approved it will appear here too
+            <a ref="https://www.instagram.com/roda.co_/">Roda</a> is a credit company in Colombia that issues loans to delivery drivers, micro-entrepreneurs and migrants.
+          </Typography>
+          <Typography>
+            Below is a list of our loans, issued onchain for transparency. If you are a capital provider, <a href="mailto:alejandro@roda.xyz">get in touch</a> if you would like to fund loans for a particular user subset or category. 
+            We are currently in talks with providers interested in lending up to USD 5M.
           </Typography>
         </CardContent>
       </Card>
