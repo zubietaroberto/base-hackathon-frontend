@@ -2,7 +2,6 @@
 
 import { Card, CardContent, CardHeader, Link, Typography } from "@mui/material";
 import { NavBar } from "./(Navbar)";
-import { SearchBar } from "./(SearchBar)";
 import { getPage } from "./serverSideFunctions";
 import { TokenList } from "./TokenList";
 
@@ -12,7 +11,6 @@ export default async function Home() {
   return (
     <main>
       <NavBar />
-      <SearchBar />
 
       <Card>
         <CardHeader title="Roda's onchain loanbook" />
